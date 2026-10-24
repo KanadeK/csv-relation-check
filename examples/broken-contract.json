@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "tables": [
+    {"name": "customers", "path": "customers.csv", "primary_key": ["id"], "required": ["name"]},
+    {"name": "orders", "path": "broken-orders.csv", "primary_key": ["order_id"], "foreign_keys": [
+      {"columns": ["customer_id"], "references": {"table": "customers", "columns": ["id"]}}
+    ]}
+  ]
+}
