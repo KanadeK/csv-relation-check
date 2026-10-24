@@ -44,7 +44,7 @@ def load_contract(path, root=None):
         raise InputError("contract exceeds 1 MiB")
     try:
         spec = json.loads(path.read_text(encoding="utf-8-sig"), object_pairs_hook=_distinct_object)
-    except (UnicodeError, json.JSONDecodeError) as exc:
+    except (UnicodeError, json.JSONDecodeError, RecursionError) as exc:
         raise InputError("contract must be valid UTF-8 JSON") from exc
     _object(spec, ["version", "tables"], ["version", "tables"], "contract")
     if type(spec["version"]) is not int or spec["version"] != 1:

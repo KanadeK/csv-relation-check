@@ -164,6 +164,11 @@ class ContractTests(unittest.TestCase):
         with self.assertRaises(InputError):
             check(self.contract)
 
+    def test_deep_json_is_a_clean_input_error(self):
+        self.contract.write_text("[" * 2000 + "0" + "]" * 2000)
+        with self.assertRaises(InputError):
+            check(self.contract)
+
     def test_non_utf8_csv_and_cleanup(self):
         self.spec(self.pair())
         (self.root / "orders.csv").write_bytes(b"id,customer\n1,\xff\n")
