@@ -155,9 +155,22 @@ class ContractTests(unittest.TestCase):
 
     def test_sql_metacharacters_in_labels_and_values(self):
         col = 'id"; DROP TABLE t0;--'
-        t = self.table("safe", [col, "ID"], [("x\x00y", "a"), ("x\x00z", "a")], primary_key=[col])
+        t = self.table(
+            "safe",
+            [col, "ID"],
+            [("x'); DROP TABLE t0; --", "a"), ("other", "a")],
+            primary_key=[col],
+        )
         t["name"] = 'table weird "name'
         self.assertTrue(check(self.spec([t]))["ok"])
+
+    def test_nul_data_is_rejected_consistently(self):
+        self.spec(self.pair())
+        (self.root / "orders.csv").write_bytes(b"id,customer\n1,PRIVATE\x00DATA\n")
+        with self.assertRaises(InputError) as caught:
+            check(self.contract, temp_dir=self.scratch)
+        self.assertNotIn("PRIVATE", str(caught.exception))
+        self.assertEqual([], list(self.scratch.iterdir()))
 
     def test_duplicate_json_object_keys_are_rejected(self):
         self.contract.write_text('{"version":1,"version":1,"tables":[]}')

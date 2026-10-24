@@ -178,6 +178,8 @@ def check(
                         count = 0
                         for record, row in enumerate(reader, 2):
                             count += 1
+                            if any("\x00" in value for value in row):
+                                raise InputError(f"{name}: NUL is not supported in CSV data")
                             if count > max_rows:
                                 raise InputError(f"{name}: max-rows exceeded; scan incomplete")
                             if len(row) != len(header):

@@ -55,7 +55,7 @@ Exit `0`: completed, all checks passed. Exit `1`: completed with violations. Exi
 
 The v1 report includes complete `counts`, `rows`, `finding_count`, capped `findings`, `omitted_findings` and `cell_values_included: false`. A finding's `record: 2` means the first data record after the header; multiline quoted cells still occupy one logical record. `rows` includes malformed-width records, which are reported and excluded from relational queries. A record can violate several constraints, so finding counts are not counts of distinct bad rows.
 
-- UTF-8 CSV, optional BOM, explicit one-character delimiter; comma by default. Use `"delimiter": "\t"` for TSV.
+- UTF-8 CSV, optional BOM, explicit one-character delimiter; comma by default. Use `"delimiter": "\t"` for TSV. NUL characters are rejected consistently across supported Python versions.
 - Every field is SQLite TEXT with BINARY equality: no trimming, numeric conversion, Unicode normalization or case folding. Whitespace-only text is a value.
 - Primary keys must be nonempty and unique. `required` rejects the exact empty string. A `unique` key compares empty strings as literal values, so repeated empty keys violate uniqueness.
 - Foreign keys reference a declared primary or unique key in the same contract, with the same arity. `"allow_empty": true` skips only an entirely empty foreign key. Partly empty composite keys always fail. Self-references and cycles between tables are supported as membership checks.
